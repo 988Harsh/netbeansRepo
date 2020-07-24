@@ -6,6 +6,7 @@
 package com.harsh.practice;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 /**
@@ -13,14 +14,22 @@ import org.springframework.web.bind.annotation.RequestMapping;
  * @author Lenovo
  */
 @Controller
+@RequestMapping("/home")
 public class HomeController {
     
     @RequestMapping("/")
     public String display() {
         return "home";
     }
+    
     @RequestMapping("/second")
-    public String display2() {
+    public String redirect() {
         return "second";
+    }
+    
+    @InitBinder
+    public String filter()
+    {
+        return "";
     }
 }

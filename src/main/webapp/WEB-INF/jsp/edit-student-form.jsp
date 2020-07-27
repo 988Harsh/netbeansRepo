@@ -14,7 +14,7 @@
     </head>
     <body>
         
-        <form:form action="updateStudent" modelAttribute="student">
+        <form:form action="processForm" modelAttribute="student">
             
             First Name: <form:input path="fname"/><br>
             Last Name: <form:input path="lname"/><br>

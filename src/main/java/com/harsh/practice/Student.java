@@ -5,11 +5,16 @@
  */
 package com.harsh.practice;
 
+import java.util.ArrayList;
+import java.util.List;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 
@@ -35,7 +40,21 @@ public class Student {
     
     @Column(name="email")
     private String email;
+    
+    @OneToMany(fetch=FetchType.EAGER,
+            mappedBy="student", cascade= {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
+    private List<Marks> marks; 
 
+    public List<Marks> getMarks() {
+        return marks;
+    }
+
+    public void setMarks(List<Marks> marks) {
+        this.marks = marks;
+    }
+
+    
+    
     public Student() {
         
     }
@@ -85,5 +104,15 @@ public class Student {
         return "Student{" + "id=" + id + ", fname=" + fname + ", lname=" + lname + ", email=" + email + '}';
     }
 
+    public void add(Marks marks)
+    {
+        if(this.marks==null)
+        {
+            this.marks = new ArrayList<>();
+        }
+        
+        this.marks.add(marks);
+        marks.setStudent(this);
+    }
     
 }

@@ -21,7 +21,7 @@
                 <td>fname</td>
                 <td>lname</td>
                 <td>email</td>
-                <td colspan="4">Changes/View</td>
+                <td colspan="2">Changes</td>
             </tr>
         <c:forEach var="st" items="${theStudents}">
             <tr>
@@ -31,8 +31,6 @@
                 <td>${st.email}</td>
                 <td><form action="editStudent" ><input hidden type="text" value="${st.id}" name="id"><input type="submit" value="Edit"></form></td>
                 <td><form action="deleteStudent" ><input hidden type="text" value="${st.id}" name="id"><input type="submit" value="Delete"></form></td>
-                <td><form action="../marks/addMarksStudent" ><input hidden type="text" value="${st.id}" name="id"><input type="submit" value="Add Marks"></form></td>
-                <td><form action="../marks/getMarksStudent" ><input hidden type="text" value="${st.id}" name="id"><input type="submit" value="Show Marks"></form></td>
             </tr>
         </c:forEach>
             

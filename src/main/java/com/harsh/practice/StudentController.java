@@ -10,17 +10,19 @@
 package com.harsh.practice;
 
 
+import com.harsh.practice.service.StudentService;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.hibernate.cfg.Configuration;
-import org.springframework.http.HttpRequest;
+//import org.hibernate.Session;
+//import org.hibernate.SessionFactory;
+//import org.hibernate.cfg.Configuration;
+import org.springframework.beans.factory.annotation.Autowired;
+//import org.springframework.http.HttpRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.servlet.ModelAndView;
+//import org.springframework.web.servlet.ModelAndView;
 
 /**
  *
@@ -30,6 +32,9 @@ import org.springframework.web.servlet.ModelAndView;
 @RequestMapping("/student")
 public class StudentController {
     
+    @Autowired
+    private StudentService studentService;
+    
     @RequestMapping("/showForm")
     public String showAddForm(Model StudentModel){
         
@@ -38,128 +43,40 @@ public class StudentController {
         return "student-form";
     }
     
+    
     @RequestMapping("/processForm")
     public String processForm( @ModelAttribute("student") Student st, HttpServletRequest req){
-        
-        SessionFactory factory = new Configuration()
-                                 .configure("hibernate.cfg.xml")
-                                 .addAnnotatedClass(Student.class)
-                                 .buildSessionFactory();
-        
-        Session session = factory.getCurrentSession();
-        
-        try
-        {
-            session.beginTransaction();
-            session.save(st);
-            session.getTransaction().commit();
-            System.out.println("Done");
-        }
-        catch(Exception e)
-        {
-            System.out.println(e);
-        }
-        
-        return "student-conformation";
+
+        studentService.saveStudent(st);
+        return "redirect:/student/showStudents";
     }
     
     @RequestMapping("/showStudents")
     public String showData(Model theModel)
     {
-        SessionFactory factory = new Configuration()
-                                 .configure("hibernate.cfg.xml")
-                                 .addAnnotatedClass(Student.class)
-                                 .buildSessionFactory();
-        
-       //  theStudents = new List<Student>();
-       
-        Session session = factory.getCurrentSession();
-        session.beginTransaction();
-        List<Student> theStudents = session
-                                    .createQuery("from Student")
-                                    .list();
-        session.getTransaction().commit();
-        
-        System.out.println("Starting to fetch");
-//        for(Student st1:theStudents)
-//        {
-//            System.out.println(st1.getId()+ " " + st1.getEmail() +" "+ st1.getFname() + " "+st1.getLname()  );
-//        }
-        System.out.println("End of fetch");
-       
-       // theModel.addAllObjects(theStudents);
-        theModel.addAttribute("theStudents",theStudents);
-        return "show-student";
+	List<Student> theStudents = studentService.getStudents();
+	theModel.addAttribute("theStudents", theStudents);
+	return "show-student";
     }
+    
+    
     
     @RequestMapping("/editStudent")
     public String displayEditForm(HttpServletRequest req, Model theModel)
     {
-        
-        //System.out.println("In here!!");
-        int id = Integer.parseInt(req.getParameter("id"));
-        
-        SessionFactory factory = new Configuration()
-                                 .configure("hibernate.cfg.xml")
-                                 .addAnnotatedClass(Student.class)
-                                 .buildSessionFactory();
-       
-        Session session = factory.getCurrentSession();
-       
-        session.beginTransaction();
-        Student theStudent = session.get(Student.class,id);
-        session.getTransaction().commit();
-        
-        System.out.println("In here twice!!");
-        
-        theModel.addAttribute("student",theStudent);        
+         int id = Integer.parseInt(req.getParameter("id"));
+        Student theStudent = studentService.getStudent(id);
+        theModel.addAttribute("student", theStudent);
         return "edit-student-form";
-    }
-    
-    @RequestMapping("/updateStudent")
-    public String updateStudent(@ModelAttribute("student") Student st, Model theModel)
-    {
-        SessionFactory factory = new Configuration()
-                                 .configure("hibernate.cfg.xml")
-                                 .addAnnotatedClass(Student.class)
-                                 .buildSessionFactory();
-       
-        Session session = factory.getCurrentSession();
-       // System.out.println("Before Updating!!");
-        session.beginTransaction();
-        session.update(st);
-        List<Student> theStudents = session
-                                    .createQuery("from Student")
-                                    .list();
-        session.getTransaction().commit();
-       // System.out.println("After Update!!");
-        
-        theModel.addAttribute("theStudents",theStudents);
-        return "show-student";
     }
     
     @RequestMapping("/deleteStudent")
     public String deleteStudent(HttpServletRequest req,Model theModel)
     {
         int id = Integer.parseInt(req.getParameter("id"));
-        
-        SessionFactory factory = new Configuration()
-                                 .configure("hibernate.cfg.xml")
-                                 .addAnnotatedClass(Student.class)
-                                 .buildSessionFactory();
+        studentService.deleteStudent(id);
        
-        Session session = factory.getCurrentSession();
-       
-        session.beginTransaction();
-        Student st = session.get(Student.class,id);
-        session.delete(st);
-        List<Student> theStudents = session
-                                    .createQuery("from Student")
-                                    .list();
-        session.getTransaction().commit();
-       
-       theModel.addAttribute("theStudents",theStudents);
-        return "show-student";
+        return "redirect:/student/showStudents";
        
     }
     

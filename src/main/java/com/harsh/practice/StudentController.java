@@ -13,6 +13,7 @@ package com.harsh.practice;
 import com.harsh.practice.service.StudentService;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 //import org.hibernate.Session;
 //import org.hibernate.SessionFactory;
 //import org.hibernate.cfg.Configuration;
@@ -52,8 +53,10 @@ public class StudentController {
     }
     
     @RequestMapping("/showStudents")
-    public String showData(Model theModel)
+    public String showData(Model theModel, HttpServletResponse response)
     {
+        
+        
 	List<Student> theStudents = studentService.getStudents();
 	theModel.addAttribute("theStudents", theStudents);
 	return "show-student";

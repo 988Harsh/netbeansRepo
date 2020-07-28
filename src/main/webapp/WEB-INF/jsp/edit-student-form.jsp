@@ -19,6 +19,7 @@
             First Name: <form:input path="fname"/><br>
             Last Name: <form:input path="lname"/><br>
             Email: <form:input path="email"/><br>
+            
             <form:hidden path="id"/>
             <input type="submit" value="Submit" />
         </form:form>
